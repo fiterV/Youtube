@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Repeater</title>
+    {% load static %}
+    <link href="{% static 'player/css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'player/jquery.min.js' %}"></script>
+    <style>
+        #linkInput{
+            margin-top:10%;
+        }
+        .row {
+            margin-top:10%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6" id="linkInput">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Insert Youtube url here">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" onclick="load123()">Go</button>
+                </span>
+            </div>
+         </div>
+
+
+
+        <div class="col-lg-6">
+            <div class="col-lg-offset-6 col-md-offset-6 col-xs-offset-6">
+                <span id="repeats">0</span> repeat(s)!
+            </div>
+
+            <div class="embed-responsive embed-responsive-16by9" >
+                <div id="player">
+                    <img src="{% static "player/loading.gif" %}">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+ // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      var player;
+//7mv8CO7Obwo
+      var videoCode='';
+      var repeats=0;
+
+
+      function onYouTubeIframeAPIReady() {
+
+        player = new YT.Player('player', {
+          loop: '1',
+          version: '3',
+          videoId: videoCode,
+          playlist: videoCode,
+
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+          }
+        });
+      }
+
+      function load123(){
+          videoCode = $("input").val();
+          startCode = videoCode.indexOf("?v=");
+          videoCode = videoCode.substr(startCode+3);
+          player.destroy();
+          $("iframe").remove();
+          repeats=0;
+          $('#repeats').html(repeats);
+          onYouTubeIframeAPIReady();
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.ENDED && !done) {
+          event.target.playVideo();
+          repeats++;
+          $('#repeats').html(repeats);
+        }
+      }
+</script>
+
+</body>
+</html>
